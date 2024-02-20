@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.88.1">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon-32x32.png}">
+    <title>Add Destination</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbars/">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link href="navbar.css" rel="stylesheet">
+</head>
+<body>
+
+<nav th:replace="index :: fullNavbar"></nav>
+<!--<nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">-->
+<!--    <div class="container-fluid">-->
+<!--        <a class="navbar-brand" href="/">Home</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<div class="container" style="max-width: 666px; padding-top: 66px; padding-bottom: 66px;">
+    <main>
+        <form th:object="${destinationAddDto}" th:method="POST" th:action="@{/destinations/add}">
+            <div class="row g-3">
+
+                <h4 class="mb-3">Add New Destination</h4>
+                <div class="col-12">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                    <small class="text-body-secondary" style="color: gray">Copy-paste as name appears in Glovia/Salesforce</small>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Does the destination require invoice for importing orders/devices:</label>
+                    <select class="form-select" id="requiresInvoice" th:field="*{requiresInvoice}" required>
+                        <option value="UNKNOWN">Unknown</option>
+                        <option value="TRUE">Yes</option>
+                        <option value="FALSE">No</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">Like non-EU countries</small>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Does the destination require special device models:</label>
+                    <select class="form-select" id="requiresSpecialModels" th:field="*{requiresSpecialModels}" required>
+                        <option value="UNKNOWN">Unknown</option>
+                        <option value="TRUE">Yes</option>
+                        <option value="FALSE">No</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">Like Turkey, Thailand...</small>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Does the destination require "unused" devices:</label>
+                    <select class="form-select" id="requiresUnusedDevices" th:field="*{requiresUnusedDevices}" required>
+                        <option value="UNKNOWN">Unknown</option>
+                        <option value="TRUE">Yes</option>
+                        <option value="FALSE">No</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">Like Turkey</small>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">SIM type:</label>
+                    <select class="form-select" id="simType" th:field="*{simType}" required>
+                        <option value="NONE">No SIMs sent by default</option>
+                        <option value="VF_GLOBAL">VF-Global</option>
+                        <option value="SIMON_IOT">Simon-IOT</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Plug type:</label>
+                    <select class="form-select" id="plugType" th:field="*{plugType}" required>
+                        <option value="A">Type A</option>
+                        <option value="C">Type C</option>
+                        <option value="I">Type I</option>
+                        <option value="G">Type G</option>
+                    </select>
+                </div>
+
+                <hr class="my-3">
+                <label class="form-label">Languages:</label>
+                <div class="col-md-12" >
+                    <small class="text-body-secondary" style="color: gray">
+                        If one or more languages not present, add them first. Do not add English, unless it is an official language of the destination:
+                    </small>
+                    <hr class="my-1">
+                    <div class="form-check">
+                        <div th:each="l : ${allLanguages}">
+                            <input type="checkbox" class="form-check-input" th:field="*{selectedLanguages}" th:value="${l.name}">
+                            <span th:text="${l.name}">asdf</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <p th:if="${error}"
+               class="errors alert alert-danger" th:text="${message}">
+            </p>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Add Destination</button>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

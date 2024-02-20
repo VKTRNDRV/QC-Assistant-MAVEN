@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.88.1">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon-32x32.png}">
+    <title>Notes - Medidata</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbars/">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+
+    <link href="navbar.css" rel="stylesheet">
+</head>
+<body>
+<!--<nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">-->
+<!--    <div class="container-fluid">-->
+<!--        <a class="navbar-brand" href="/">Home</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<nav th:replace="index :: fullNavbar"></nav>
+
+<div class="container-fluid mt-3 text-left" th:object="${notes}">
+    <div class="row">
+        <div class="col-3">
+            <form class="row">
+                <div class="col">
+                    <input type="text" class="form-control" id="serial-input" placeholder="Serial">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-3" id="check-button">Check</button>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-secondary mb-3" id="reset-button">Reset</button>
+                </div>
+            </form>
+            <div class="list-group mb-3">
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark"><strong>Serialized Items:</strong></a>
+
+                <li th:each="item : *{items}"
+                   href="#" class="list-group-item list-group-item-action list-group-item-light serialized-item">
+                    <span th:value="${item.shortName}" th:text="${item.shortName}"
+                          class="short-name">TestItem 1</span>
+                    <span>-</span>
+                    <span th:value="${item.serial}" th:text="${item.serial}"
+                          class="serial-number">T3STS3R14LT3STS3R14LT3STS3R14L</span>
+                </li>
+            </div>
+            <div class="card" th:unless="*{isStudyUnknown()}">
+                <div class="card-body" th:object="${notes.study}">
+                    <h5>Study Info:</h5>
+
+                    <hr class="my-4">
+
+                    <a class="btn btn-primary mb-3" th:href="*{folderURL}" role="button" target="_blank">Study Docs & Labels folder </a>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Name:</span>
+                        <input type="text" class="form-control"  id="name" th:value="*{name}" readonly>
+                    </div>
+
+                    <h6>Environment:</h6>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Legacy:</span>
+                        <input type="text" class="form-control"  id="isLegacy" th:value="*{environment.isLegacy}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Site-Patient separated:</span>
+                        <input type="text" class="form-control"  id="isSitePatientSeparated" th:value="*{environment.isSitePatientSeparated}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Destination separated:</span>
+                        <input type="text" class="form-control"  id="isDestinationSeparated" th:value="*{environment.isDestinationSeparated}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >OS separated:</span>
+                        <input type="text" class="form-control"  id="isOsSeparated" th:value="*{environment.isOsSeparated}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Site Apps:</span>
+                        <input type="text" class="form-control" id="siteApps" th:value="*{environment.siteApps}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Patient Apps:</span>
+                        <input type="text" class="form-control"  id="patientApps" th:value="*{environment.patientApps}" readonly>
+                    </div>
+
+                    <h6>Docs & Labels:</h6>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Translated Labels:</span>
+                        <input type="text" class="form-control"  id="containsTranslatedLabels" th:value="*{containsTranslatedLabels}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Translated User Guides:</span>
+                        <input type="text" class="form-control"  id="containsTranslatedDocs" th:value="*{containsTranslatedDocs}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Editable Welcome Letter:</span>
+                        <input type="text" class="form-control" id="containsEditableWelcomeLetter" th:value="*{containsEditableWelcomeLetter}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >iPad Patient Device:</span>
+                        <input type="text" class="form-control" id="isPatientDeviceIpad" th:value="*{isPatientDeviceIpad}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" >Headphones & Styluses:</span>
+                        <input type="text" class="form-control" id="includesHeadphonesStyluses" th:value="*{includesHeadphonesStyluses}" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="row">
+                <div th:if="*{containsIosDevices()}" class="col-6 mb-3">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action list-group-item-dark"><strong>iOS notes:</strong></a>
+                        <div th:each="note : *{iosNotes}">
+                            <a th:if="${note.isLowSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-light">Test Low Severity</a>
+                            <a th:if="${note.isMediumSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-warning">Test Medium Severity</a>
+                            <a th:if="${note.isHighSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-danger">Test High Severity</a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="*{containsAndroidDevices()}" class="col-6 mb-3">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action list-group-item-dark"><strong>Android notes:</strong></a>
+                        <div th:each="note : *{androidNotes}">
+                            <a th:if="${note.isLowSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-light">Test Low Severity</a>
+                            <a th:if="${note.isMediumSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-warning">Test Medium Severity</a>
+                            <a th:if="${note.isHighSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-danger">Test High Severity</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action list-group-item-dark"><strong>Docs & Labels notes:</strong></a>
+                        <div th:each="note : *{documentationNotes}">
+                            <a th:if="${note.isLowSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-light">Test Low Severity</a>
+                            <a th:if="${note.isMediumSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-warning">Test Medium Severity</a>
+                            <a th:if="${note.isHighSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-danger">Test High Severity</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action list-group-item-dark"><strong>Shell Check notes:</strong></a>
+                        <div th:each="note : *{shellCheckNotes}">
+                            <a th:if="${note.isLowSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-light">Test Low Severity</a>
+                            <a th:if="${note.isMediumSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-warning">Test Medium Severity</a>
+                            <a th:if="${note.isHighSeverity()}" th:text="${note.text}" href="#"
+                               class="list-group-item list-group-item-action list-group-item-danger">Test High Severity</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const resetButton = document.getElementById("reset-button");
+        const checkButton = document.getElementById("check-button");
+        const serialInput = document.getElementById("serial-input");
+        const listItems = document.querySelectorAll(".serialized-item");
+
+        checkButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const inputText = serialInput.value.trim().toUpperCase();
+            serialInput.value = ""; // Clear the input field
+
+            let matchFound = false;
+            let duplicateDetected = false;
+
+            for (const listItem of listItems) {
+                const listItemSerial = listItem.querySelector(".serial-number")
+                    .textContent.trim().toUpperCase();
+                if (listItemSerial === inputText) {
+                    matchFound = true;
+                    if (listItem.classList.contains("list-group-item-success")) {
+                        duplicateDetected = true;
+                        listItem.classList.value =
+                            "list-group-item list-group-item-action list-group-item-danger serialized-item"
+                    } else {
+                        listItem.classList.value =
+                            "list-group-item list-group-item-action list-group-item-success serialized-item";
+                    }
+                    break;
+                }
+            }
+
+            if (!matchFound) {
+                alert("No match found - " + inputText);
+            } else if (duplicateDetected) {
+                alert("Duplicate detected - " + inputText);
+            }
+        });
+
+        resetButton.addEventListener("click", function (event){
+            event.preventDefault();
+            for(const listItem of listItems){
+                listItem.classList.value = "list-group-item list-group-item-action list-group-item-light serialized-item"
+            }
+        })
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

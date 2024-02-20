@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.88.1">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon-32x32.png}">
+    <title>Studies - Medidata</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbars/">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link href="navbar.css" rel="stylesheet">
+</head>
+<body>
+<!--<nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">-->
+<!--    <div class="container-fluid">-->
+<!--        <a class="navbar-brand" href="/">Home</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<nav th:replace="index :: fullNavbar"></nav>
+
+<div class="container-xxl mt-2">
+    <div class="container m-3 text-center">
+        <h3>Medidata Studies</h3>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Sponsor:</th>
+                    <th>Name:</th>
+                    <th>Details:</th>
+                    <th sec:authorize="hasRole('ROLE_MODERATOR')">Edit:</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="s : ${studies}">
+                    <td th:text="${s.sponsor}"></td>
+                    <td th:text="${s.name}"></td>
+                    <td>
+                        <a href="#" class="view-details-link" th:data-id="${s.id}" >View Details</a>
+                    </td>
+                    <td sec:authorize="hasRole('ROLE_MODERATOR')">
+                        <a th:href="@{'/medidata/studies/edit/' + ${s.id}}" >Edit</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-6">
+            <div class="sticky-top">
+                <div class="card">
+                    <div class="card-body" th:object="${study}">
+                        <h5>Study Info:</h5>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Name:</span>
+                            <input type="text" class="form-control"  id="name" readonly>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Folder URL:</span>
+                            <input type="text" class="form-control"  id="folderURL" readonly>
+                        </div>
+
+                        <h6>Environment:</h6>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Legacy:</span>
+                            <input type="text" class="form-control"  id="isLegacy" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Site-Patient separated:</span>
+                            <input type="text" class="form-control"  id="isSitePatientSeparated" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Destination separated:</span>
+                            <input type="text" class="form-control"  id="isDestinationSeparated" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">OS separated:</span>
+                            <input type="text" class="form-control"  id="isOsSeparated" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Site Apps:</span>
+                            <input type="text" class="form-control" id="siteApps" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Patient Apps:</span>
+                            <input type="text" class="form-control"  id="patientApps" readonly>
+                        </div>
+
+                        <h6>Docs & Labels:</h6>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Translated Labels:</span>
+                            <input type="text" class="form-control"  id="containsTranslatedLabels" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Translated User Guides:</span>
+                            <input type="text" class="form-control"  id="containsTranslatedDocs" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Is Welcome Letter Editable:</span>
+                            <input type="text" class="form-control" id="containsEditableWelcomeLetter" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">iPad Patient Device:</span>
+                            <input type="text" class="form-control" id="isPatientDeviceIpad" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Headphones & Styluses:</span>
+                            <input type="text" class="form-control" id="includesHeadphonesStyluses" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var viewDetailsLinks = document.querySelectorAll(".view-details-link");
+
+        viewDetailsLinks.forEach(function (link) {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                var studyId = link.getAttribute("data-id");
+
+                fetch("/medidata/studies/info/" + studyId)
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("Error fetching Study data");
+                        }
+
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        document.getElementById("name").value = data.name;
+                        document.getElementById("folderURL").value = data.folderURL;
+                        document.getElementById("isLegacy").value = data.environment.isLegacy;
+                        document.getElementById("isSitePatientSeparated").value = data.environment.isSitePatientSeparated;
+                        document.getElementById("isDestinationSeparated").value = data.environment.isDestinationSeparated;
+                        document.getElementById("isOsSeparated").value = data.environment.isOsSeparated;
+                        document.getElementById("siteApps").value = data.environment.siteApps;
+                        document.getElementById("patientApps").value = data.environment.patientApps;
+                        document.getElementById("containsTranslatedLabels").value = data.containsTranslatedLabels;
+                        document.getElementById("containsTranslatedDocs").value = data.containsTranslatedDocs;
+                        document.getElementById("containsEditableWelcomeLetter").value = data.containsEditableWelcomeLetter;
+                        document.getElementById("isPatientDeviceIpad").value = data.isPatientDeviceIpad;
+                        document.getElementById("includesHeadphonesStyluses").value = data.includesHeadphonesStyluses;
+                    })
+                    .catch(function (error) {
+                        alert(error.message);
+                    });
+            });
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

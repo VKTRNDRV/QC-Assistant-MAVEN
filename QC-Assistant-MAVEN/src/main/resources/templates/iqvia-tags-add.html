@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head><script src="../assets/js/color-modes.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.115.4">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon-32x32.png}">
+    <title>Add Tag - IQVIA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+
+    <link href="navbar.css" rel="stylesheet">
+</head>
+<body>
+<!--<nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">-->
+<!--    <div class="container-fluid">-->
+<!--        <a class="navbar-brand" href="/">Home</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<nav th:replace="index :: fullNavbar"></nav>
+
+<div class="container" style="max-width: 666px; padding-top: 66px; padding-bottom: 66px;">
+    <main>
+        <form th:object="${tagAddDto}" th:method="POST" th:action="@{/iqvia/tags/add}">
+            <div class="row g-3">
+
+                <h4 class="mb-3">Add New IQVIA Tag</h4>
+                <div class="col-12">
+                    <label for="name" class="form-label">Text:</label>
+                    <input type="text" class="form-control" id="name" th:field="*{text}" required>
+                    <small class="text-body-secondary" style="color: gray">The text that is to be displayed in the note's field</small>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="severity" class="form-label">Severity (color) of the displayed note:</label>
+                    <select class="form-select" id="severity" th:field="*{severity}" required>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">Low -> gray // Medium -> yellow // High -> red</small>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="type" class="form-label">Section where the note should be displayed:</label>
+                    <select class="form-select" id="type" th:field="*{type}" required>
+                        <option value="SHELLCHECK">Shell Check notes</option>
+                        <option value="DOCUMENTATION">Documentation (& Labels) notes</option>
+                        <option value="IOS">iOS Devices notes</option>
+                        <option value="AFW">Android Devices notes</option>
+                        <option value="WIN">Windows Devices notes</option>
+                    </select>
+                </div>
+
+                <!--                PRECODITIONS-->
+                <hr class="my-4">
+
+                <h5 class="mb-3">Preconditions:</h5>
+                <h6 style="color: gray">All Preconditions need to be fulfilled in order for a tag to be added to an order's notes !</h6>
+                <div class="col-md-12">
+                    <label for="orderType" class="form-label">Order type:</label>
+                    <select class="form-select" id="orderType" th:field="*{orderType}" required>
+                        <option value="OTHER">N/A</option>
+                        <option value="PROD">PROD</option>
+                        <option value="UAT">UAT</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">(e.g. select 'UAT' to display this tag's note only if an order is UAT) Leave 'N/A' if an order's type is irrelevant to the tag's logic.</small>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="operatingSystem" class="form-label">OS of the devices in the order:</label>
+                    <select class="form-select" id="operatingSystem" th:field="*{operatingSystem}" required>
+                        <option value="OTHER">N/A</option>
+                        <option value="IOS">iOS</option>
+                        <option value="ANDROID">Android</option>
+                        <option value="WINDOWS">Windows</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">(e.g. select 'Android' to display this tag's note only if an order contains Android devices) Leave 'N/A' if the OS of devices in the order are irrelevant to the tag's logic.</small>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="shellType" class="form-label">Shell type of the devices in the order:</label>
+                    <select class="form-select" id="shellType" th:field="*{shellType}" required>
+                        <option value="OTHER">N/A</option>
+                        <option value="TABLET">Tablet</option>
+                        <option value="PHONE">Phone</option>
+                    </select>
+                    <small class="text-body-secondary" style="color: gray">(e.g. select 'Phone' to display this tag's note only if an order contains phones (iOS or AFW)) Leave 'N/A' if the shell type of devices in the order are irrelevant to the tag's logic.</small>
+                </div>
+
+                <div class="col-md-12" >
+                    <h6>Studies:</h6>
+                    <small class="text-body-secondary" style="color: gray">
+                        Select none if an order's study is irrelevant to the tag's logic. The tag's note will be displayed only if an order's study equals one of the below selected:
+                    </small>
+                    <hr class="my-1">
+                    <div class="form-check">
+                        <div th:each="s : ${studies}">
+                            <input type="checkbox" class="form-check-input" th:field="*{studies}" th:value="${s.name}">
+                            <span th:text="${s.displayName()}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12" >
+                    <h6>Destinations:</h6>
+                    <small class="text-body-secondary" style="color: gray">
+                        Select none if an order's destination is irrelevant to the tag's logic. The tag's note will be displayed only if an order's destionation equals one of the below selected:
+                    </small>
+                    <hr class="my-1">
+                    <div class="form-check">
+                        <div th:each="d : ${destinations}">
+                            <input type="checkbox" class="form-check-input" th:field="*{destinations}" th:value="${d.name}">
+                            <span th:text="${d.name}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <p th:if="${error}"
+               class="errors alert alert-danger" th:text="${message}">
+            </p>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Add Tag</button>
+        </form>
+    </main>
+</div>
+<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
