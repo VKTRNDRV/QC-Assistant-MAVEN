@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'dss-qc-assistant'
           slot-name: 'Production'
-          package: '*.war'
+          package: '*.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E94DD631F6FA4E2F8E8FE0558137414D }}
