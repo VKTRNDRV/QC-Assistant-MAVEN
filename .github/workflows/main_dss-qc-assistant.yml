@@ -24,14 +24,11 @@ jobs:
       - name: Build with Maven
         run: mvn -f QC-Assistant-MAVEN clean install -DskipTests
 
-      - name: Debug files in target directory
-        run: ls ${{ github.workspace }}/target
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.war'
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
